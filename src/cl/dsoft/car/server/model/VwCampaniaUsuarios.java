@@ -44,6 +44,9 @@ public class VwCampaniaUsuarios {
 			
 			listParameters.add(new AbstractMap.SimpleEntry<String, String>("id_usuario", String.valueOf(idBase)));
 			listParameters.add(new AbstractMap.SimpleEntry<String, String>("mas reciente", fechaModificacion));
+			listParameters.add(new AbstractMap.SimpleEntry<String, String>("activa", null));
+			listParameters.add(new AbstractMap.SimpleEntry<String, String>("vigente", null));
+			listParameters.add(new AbstractMap.SimpleEntry<String, String>("no enviada", null));
 			
 			this.vwCampaniaUsuarios = VwCampaniaUsuario.seek(conn, listParameters, null, null, 0, 10000);
 			

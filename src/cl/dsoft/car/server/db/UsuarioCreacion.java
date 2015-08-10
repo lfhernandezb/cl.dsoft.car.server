@@ -17,28 +17,22 @@ import cl.dsoft.car.misc.UnsupportedParameterException;
  * @author petete-ntbk
  *
  */
-public class CampaniaUsuario {
+public class UsuarioCreacion {
     protected Long _id;
-    protected Integer _idCampania;
     protected Long _idUsuario;
-    protected String _fechaSincro;
-    protected String _fechaModificacion;
+    protected String _fechaCreacion;
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    ca.id_campania_usuario AS id," +
-        "    ca.id_campania AS id_campania," +
-        "    ca.id_usuario AS id_usuario," +
-        "    DATE_FORMAT(ca.fecha_sincro, '%Y-%m-%d %H:%i:%s') AS fecha_sincro," +
-        "    DATE_FORMAT(ca.fecha_modificacion, '%Y-%m-%d %H:%i:%s') AS fecha_modificacion" +
-        "    FROM campania_usuario ca";
+        "    us.id_usuario_creacion AS id," +
+        "    us.id_usuario AS id_usuario," +
+        "    DATE_FORMAT(us.fecha_creacion, '%Y-%m-%d %H:%i:%s') AS fecha_creacion" +
+        "    FROM usuario_creacion us";
 
-    public CampaniaUsuario() {
+    public UsuarioCreacion() {
         _id = null;
-        _idCampania = null;
         _idUsuario = null;
-        _fechaSincro = null;
-        _fechaModificacion = null;
+        _fechaCreacion = null;
 
     }
     /**
@@ -48,28 +42,16 @@ public class CampaniaUsuario {
         return _id;
     }
     /**
-     * @return the _idCampania
-     */
-    public Integer getIdCampania() {
-        return _idCampania;
-    }
-    /**
      * @return the _idUsuario
      */
     public Long getIdUsuario() {
         return _idUsuario;
     }
     /**
-     * @return the _fechaSincro
+     * @return the _fechaCreacion
      */
-    public String getFechaSincro() {
-        return _fechaSincro;
-    }
-    /**
-     * @return the _fechaModificacion
-     */
-    public String getFechaModificacion() {
-        return _fechaModificacion;
+    public String getFechaCreacion() {
+        return _fechaCreacion;
     }
     /**
      * @param _id the _id to set
@@ -78,47 +60,33 @@ public class CampaniaUsuario {
         this._id = _id;
     }
     /**
-     * @param _idCampania the _idCampania to set
-     */
-    public void setIdCampania(Integer _idCampania) {
-        this._idCampania = _idCampania;
-    }
-    /**
      * @param _idUsuario the _idUsuario to set
      */
     public void setIdUsuario(Long _idUsuario) {
         this._idUsuario = _idUsuario;
     }
     /**
-     * @param _fechaSincro the _fechaSincro to set
+     * @param _fechaCreacion the _fechaCreacion to set
      */
-    public void setFechaSincro(String _fechaSincro) {
-        this._fechaSincro = _fechaSincro;
-    }
-    /**
-     * @param _fechaModificacion the _fechaModificacion to set
-     */
-    public void setFechaModificacion(String _fechaModificacion) {
-        this._fechaModificacion = _fechaModificacion;
+    public void setFechaCreacion(String _fechaCreacion) {
+        this._fechaCreacion = _fechaCreacion;
     }
 
-    public static CampaniaUsuario fromRS(ResultSet p_rs) throws SQLException {
-        CampaniaUsuario ret = new CampaniaUsuario();
+    public static UsuarioCreacion fromRS(ResultSet p_rs) throws SQLException {
+        UsuarioCreacion ret = new UsuarioCreacion();
 
         ret.setId(p_rs.getLong("id"));
-        ret.setIdCampania(p_rs.getInt("id_campania"));
         ret.setIdUsuario(p_rs.getLong("id_usuario"));
-        ret.setFechaSincro(p_rs.getString("fecha_sincro"));
-        ret.setFechaModificacion(p_rs.getString("fecha_modificacion"));
+        ret.setFechaCreacion(p_rs.getString("fecha_creacion"));
 
         return ret;
     }
 
-    public static CampaniaUsuario getByParameter(Connection p_conn, String p_key, String p_value) throws SQLException {
-        CampaniaUsuario ret = null;
+    public static UsuarioCreacion getByParameter(Connection p_conn, String p_key, String p_value) throws SQLException {
+        UsuarioCreacion ret = null;
         
         String str_sql = _str_sql +
-            "  WHERE ca." + p_key + " = " + p_value +
+            "  WHERE us." + p_key + " = " + p_value +
             "  LIMIT 0, 1";
         
         //System.out.println(str_sql);
@@ -175,37 +143,31 @@ public class CampaniaUsuario {
         return ret;        
     }
 
-    public static CampaniaUsuario getById(Connection p_conn, String p_id) throws SQLException {
-        return getByParameter(p_conn, "id_campania_usuario", p_id);
+    public static UsuarioCreacion getById(Connection p_conn, String p_id) throws SQLException {
+        return getByParameter(p_conn, "id_usuario_creacion", p_id);
     }
     
-    public static ArrayList<CampaniaUsuario> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws UnsupportedParameterException, SQLException {
+    public static ArrayList<UsuarioCreacion> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws UnsupportedParameterException, SQLException {
         Statement stmt = null;
         ResultSet rs = null;
         String str_sql;
-        ArrayList<CampaniaUsuario> ret;
+        ArrayList<UsuarioCreacion> ret;
         
         str_sql = "";
         
         try {
             ArrayList<String> array_clauses = new ArrayList<String>();
             
-            ret = new ArrayList<CampaniaUsuario>();
+            ret = new ArrayList<UsuarioCreacion>();
             
             str_sql = _str_sql;
             
             for (AbstractMap.SimpleEntry<String, String> p : p_parameters) {
-                if (p.getKey().equals("id_campania_usuario")) {
-                    array_clauses.add("ca.id_campania_usuario = " + p.getValue());
-                }
-                else if (p.getKey().equals("id_campania")) {
-                    array_clauses.add("ca.id_campania = " + p.getValue());
+                if (p.getKey().equals("id_usuario_creacion")) {
+                    array_clauses.add("us.id_usuario_creacion = " + p.getValue());
                 }
                 else if (p.getKey().equals("id_usuario")) {
-                    array_clauses.add("ca.id_usuario = " + p.getValue());
-                }
-                else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("ca.fecha_modificacion > STR_TO_DATE('" + p.getValue() + "', '%Y-%m-%d %H:%i:%s')");
+                    array_clauses.add("us.id_usuario = " + p.getValue());
                 }
                 else {
                     throw new UnsupportedParameterException("Parametro no soportado: " + p.getKey());
@@ -291,12 +253,11 @@ public class CampaniaUsuario {
         Statement stmt = null;
 
         String str_sql =
-            "    UPDATE campania_usuario" +
+            "    UPDATE usuario_creacion" +
             "    SET" +
-            "    fecha_sincro = " + (_fechaSincro != null ? "STR_TO_DATE('" + _fechaSincro + "', '%Y-%m-%d %H:%i:%s')" : "null") + "," +
-            "    fecha_modificacion = " + (_fechaModificacion != null ? "STR_TO_DATE('" + _fechaModificacion + "', '%Y-%m-%d %H:%i:%s')" : "null") +
+            "    fecha_creacion = " + (_fechaCreacion != null ? "STR_TO_DATE('" + _fechaCreacion + "', '%Y-%m-%d %H:%i:%s')" : "null") +
             "    WHERE" +
-            "    id_campania_usuario = " + Long.toString(this._id);
+            "    id_usuario_creacion = " + Long.toString(this._id);
 
         try {
             stmt = p_conn.createStatement();
@@ -342,16 +303,14 @@ public class CampaniaUsuario {
         ResultSet rs = null;
 
         String str_sql =
-            "    INSERT INTO campania_usuario" +
+            "    INSERT INTO usuario_creacion" +
             "    (" +
-            "    id_campania, " +
             "    id_usuario, " +
-            "    fecha_sincro)" +
+            "    fecha_creacion)" +
             "    VALUES" +
             "    (" +
-            "    " + (_idCampania != null ? "'" + _idCampania + "'" : "null") + "," +
             "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "null") + "," +
-            "    " + (_fechaSincro != null ? "STR_TO_DATE('" + _fechaSincro + "', '%Y-%m-%d %H:%i:%s')" : "null") +
+            "    " + (_fechaCreacion != null ? "STR_TO_DATE('" + _fechaCreacion + "', '%Y-%m-%d %H:%i:%s')" : "null") +
             "    )";
         
         try {
@@ -415,9 +374,9 @@ public class CampaniaUsuario {
         Statement stmt = null;
 
         String str_sql =
-            "    DELETE FROM campania_usuario" +
+            "    DELETE FROM usuario_creacion" +
             "    WHERE" +
-            "    id_campania_usuario = " + Long.toString(this._id);
+            "    id_usuario_creacion = " + Long.toString(this._id);
 
         try {
             stmt = p_conn.createStatement();
@@ -451,11 +410,11 @@ public class CampaniaUsuario {
     }
 
     public void load(Connection p_conn) throws SQLException {
-        CampaniaUsuario obj = null;
+        UsuarioCreacion obj = null;
         
         String str_sql = _str_sql +
             "    WHERE" +
-            "    id_campania_usuario = " + Long.toString(this._id) +
+            "    id_usuario_creacion = " + Long.toString(this._id) +
             "    LIMIT 0, 1";
         
         //System.out.println(str_sql);
@@ -477,10 +436,8 @@ public class CampaniaUsuario {
                 obj = fromRS(rs);
                 //System.out.println("fromRS(rs) ok");
 
-                _idCampania = obj.getIdCampania();
                 _idUsuario = obj.getIdUsuario();
-                _fechaSincro = obj.getFechaSincro();
-                _fechaModificacion = obj.getFechaModificacion();
+                _fechaCreacion = obj.getFechaCreacion();
             }
         }
         catch (SQLException ex){
@@ -520,7 +477,7 @@ public class CampaniaUsuario {
         
         String str_sql = _str_sql +
             "    WHERE" +
-            "    id_campania_usuario = " + Long.toString(this._id) +
+            "    id_usuario_creacion = " + Long.toString(this._id) +
             "    LIMIT 0, 1";
         
         //System.out.println(str_sql);
@@ -590,48 +547,40 @@ public class CampaniaUsuario {
 
     @Override
     public String toString() {
-        return "CampaniaUsuario [" +
+        return "UsuarioCreacion [" +
 	           "    _id = " + (_id != null ? _id : "null") + "," +
-	           "    _idCampania = " + (_idCampania != null ? _idCampania : "null") + "," +
 	           "    _idUsuario = " + (_idUsuario != null ? _idUsuario : "null") + "," +
-	           "    _fecha_sincro = " + (_fechaSincro != null ? "STR_TO_DATE(" + _fechaSincro + ", '%Y-%m-%d %H:%i:%s')" : "null") + "," +
-	           "    _fecha_modificacion = " + (_fechaModificacion != null ? "STR_TO_DATE(" + _fechaModificacion + ", '%Y-%m-%d %H:%i:%s')" : "null") +
+	           "    _fecha_creacion = " + (_fechaCreacion != null ? "STR_TO_DATE(" + _fechaCreacion + ", '%Y-%m-%d %H:%i:%s')" : "null") +
 			   "]";
     }
 
 
     public String toJSON() {
-        return "CampaniaUsuario : {" +
+        return "UsuarioCreacion : {" +
 	           "    \"_id\" : " + (_id != null ? _id : "null") + "," +
-	           "    \"_idCampania\" : " + (_idCampania != null ? _idCampania : "null") + "," +
 	           "    \"_idUsuario\" : " + (_idUsuario != null ? _idUsuario : "null") + "," +
-	           "    \"_fecha_sincro\" : " + (_fechaSincro != null ? "\"" + _fechaSincro + "\"" : "null") + "," +
-	           "    \"_fecha_modificacion\" : " + (_fechaModificacion != null ? "\"" + _fechaModificacion + "\"" : "null") +
+	           "    \"_fecha_creacion\" : " + (_fechaCreacion != null ? "\"" + _fechaCreacion + "\"" : "null") +
 			   "}";
     }
 
 
     public String toXML() {
-        return "<CampaniaUsuario>" +
+        return "<UsuarioCreacion>" +
 	           "    <id" + (_id != null ? ">" + _id + "</id>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <idCampania" + (_idCampania != null ? ">" + _idCampania + "</idCampania>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <idUsuario" + (_idUsuario != null ? ">" + _idUsuario + "</idUsuario>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <fechaSincro" + (_fechaSincro != null ? ">" + _fechaSincro + "</fechaSincro>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <fechaModificacion" + (_fechaModificacion != null ? ">" + _fechaModificacion + "</fechaModificacion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-			   "</CampaniaUsuario>";
+	           "    <fechaCreacion" + (_fechaCreacion != null ? ">" + _fechaCreacion + "</fechaCreacion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+			   "</UsuarioCreacion>";
     }
 
 
-    public static CampaniaUsuario fromXMLNode(Node xmlNode) {
-        CampaniaUsuario ret = new CampaniaUsuario();
+    public static UsuarioCreacion fromXMLNode(Node xmlNode) {
+        UsuarioCreacion ret = new UsuarioCreacion();
 
         Element element = (Element) xmlNode;
 
-        ret.setId(Long.decode(element.getElementsByTagName("id_campania_usuario").item(0).getTextContent()));
-        ret.setIdCampania(Integer.decode(element.getElementsByTagName("id_campania").item(0).getTextContent()));
+        ret.setId(Long.decode(element.getElementsByTagName("id_usuario_creacion").item(0).getTextContent()));
         ret.setIdUsuario(Long.decode(element.getElementsByTagName("id_usuario").item(0).getTextContent()));
-        ret.setFechaSincro(element.getElementsByTagName("fecha_sincro").item(0).getTextContent());
-        ret.setFechaModificacion(element.getElementsByTagName("fecha_modificacion").item(0).getTextContent());
+        ret.setFechaCreacion(element.getElementsByTagName("fecha_creacion").item(0).getTextContent());
 
         return ret;
     }

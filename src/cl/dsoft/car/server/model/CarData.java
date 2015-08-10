@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import cl.dsoft.car.server.db.CampaniaUsuario;
 import cl.dsoft.car.server.db.CiaSeguros;
 import cl.dsoft.car.server.db.SeguroVehiculo;
 import cl.dsoft.car.server.db.Log;
@@ -22,6 +23,7 @@ import cl.dsoft.car.server.db.CargaCombustible;
 import cl.dsoft.car.server.db.Reparacion;
 import cl.dsoft.car.server.db.Usuario;
 import cl.dsoft.car.server.db.Autenticacion;
+import cl.dsoft.car.server.db.Util;
 import cl.dsoft.car.server.db.Vehiculo;
 import cl.dsoft.car.server.db.MantencionPospuesta;
 import cl.dsoft.car.server.db.VwCampaniaUsuario;
@@ -98,7 +100,7 @@ public class CarData {
 	/*
 	 * se generan los datos que iran desde el Servidor a la App Movil en la consulta por idUsuario
 	 */
-	public CarData(java.sql.Connection conn, Long idUsuario, String fechaModificacion) {
+	public CarData(java.sql.Connection conn, Long idUsuario, String fechaModificacion) throws SQLException {
 
 		this.paises = new Paises(conn, idUsuario, fechaModificacion);
 		this.regiones = new Regiones(conn, idUsuario, fechaModificacion);
@@ -118,12 +120,22 @@ public class CarData {
 		this.mantencionPospuestas = new MantencionPospuestas(conn, idUsuario, fechaModificacion);
 		this.vwCampaniaUsuarios = new VwCampaniaUsuarios(conn, idUsuario, fechaModificacion);
 		this.parametros = new Parametros(conn, idUsuario, fechaModificacion);
+		
+		// 2015-08 Se marcan los registros leidos desde 'campania_usuario'
+		
+		for (VwCampaniaUsuario vwCampaniaUsuario : this.vwCampaniaUsuarios.getVwCampaniaUsuarios()) {
+			CampaniaUsuario cu = CampaniaUsuario.getById(conn, String.valueOf(vwCampaniaUsuario.getId()));
+			
+			cu.setFechaSincro(Util.getDateFromServer(conn));
+			
+			cu.update(conn);
+		}
 	}
 
 	/*
 	 * se generan los datos que iran desde el Servidor a la App Movil en la consulta por idRedSocial, token
 	 */
-	public CarData(java.sql.Connection conn, Long idRedSocial, String token, Boolean byIdRedSocial) {
+	public CarData(java.sql.Connection conn, Long idRedSocial, String token, Boolean byIdRedSocial) throws SQLException {
 
 		this.usuarios = new Usuarios(conn, idRedSocial, token, byIdRedSocial);
 		
@@ -147,6 +159,16 @@ public class CarData {
 			this.mantencionPospuestas = new MantencionPospuestas(conn, u.getId(), "1900-01-01");
 			this.vwCampaniaUsuarios = new VwCampaniaUsuarios(conn, u.getId(), "1900-01-01");
 			this.parametros = new Parametros(conn, u.getId(), "1900-01-01");
+
+			// 2015-08 Se marcan los registros leidos desde 'campania_usuario'
+			
+			for (VwCampaniaUsuario vwCampaniaUsuario : this.vwCampaniaUsuarios.getVwCampaniaUsuarios()) {
+				CampaniaUsuario cu = CampaniaUsuario.getById(conn, String.valueOf(vwCampaniaUsuario.getId()));
+				
+				cu.setFechaSincro(Util.getDateFromServer(conn));
+				
+				cu.update(conn);
+			}
 		}
 		/*
 		else {

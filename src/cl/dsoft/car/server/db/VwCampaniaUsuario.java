@@ -246,6 +246,27 @@ public class VwCampaniaUsuario {
                 else if (p.getKey().equals("id_usuario")) {
                     array_clauses.add("vw.id_usuario = " + p.getValue());
                 }
+                else if (p.getKey().equals("activa")) {
+                	if (!str_sql.contains("JOIN campania_usuario ")) {
+                    	str_sql += 
+                       	    "  JOIN campania_usuario cu ON cu.id_campania_usuario = vw.id";
+                	}
+                	if (!str_sql.contains("JOIN campania ")) {
+                    	str_sql += 
+                       	    "  JOIN campania c ON c.id_campania = cu.id_campania";
+                	}
+                    array_clauses.add("c.activa = true");
+                }
+                else if (p.getKey().equals("vigente")) {
+                    array_clauses.add("(vw.fecha_inicio < now() AND vw.fecha_fin >= now())");
+                }
+                else if (p.getKey().equals("no enviada")) {
+                	if (!str_sql.contains("JOIN campania_usuario ")) {
+                    	str_sql += 
+                       	    "  JOIN campania_usuario cu ON cu.id_campania_usuario = vw.id";
+                	}
+                    array_clauses.add("cu.fecha_sincro IS NULL");
+                }
                 else {
                     throw new UnsupportedParameterException("Parametro no soportado: " + p.getKey());
                 }

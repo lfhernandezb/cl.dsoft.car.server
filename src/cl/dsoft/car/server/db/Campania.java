@@ -278,6 +278,12 @@ public class Campania {
                 if (p.getKey().equals("id_campania")) {
                     array_clauses.add("ca.id_campania = " + p.getValue());
                 }
+                else if (p.getKey().equals("activa")) {
+                    array_clauses.add("ca.activa = true");
+                }
+                else if (p.getKey().equals("vigente")) {
+                    array_clauses.add("(ca.fecha_inicio <= now() AND ca.fecha_fin >= now())");
+                }
                 else if (p.getKey().equals("mas reciente")) {
                     array_clauses.add("ca.fecha_modificacion > STR_TO_DATE('" + p.getValue() + "', '%Y-%m-%d %H:%i:%s')");
                 }
