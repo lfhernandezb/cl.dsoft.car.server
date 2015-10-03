@@ -17,22 +17,22 @@ import cl.dsoft.car.misc.UnsupportedParameterException;
  * @author petete-ntbk
  *
  */
-public class Pais {
+public class RevisionTecnica {
     protected Long _id;
-    protected String _pais;
-    protected String _fechaModificacion;
+    protected Byte _digito;
+    protected Byte _mes;
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    pa.id_pais AS id," +
-        "    pa.pais AS pais," +
-        "    DATE_FORMAT(pa.fecha_modificacion, '%Y-%m-%d %H:%i:%s') AS fecha_modificacion" +
-        "    FROM pais pa";
+        "    re.id_revision_tecnica AS id," +
+        "    re.digito AS digito," +
+        "    re.mes AS mes" +
+        "    FROM revision_tecnica re";
 
-    public Pais() {
+    public RevisionTecnica() {
         _id = null;
-        _pais = null;
-        _fechaModificacion = null;
+        _digito = null;
+        _mes = null;
 
     }
     /**
@@ -42,16 +42,16 @@ public class Pais {
         return _id;
     }
     /**
-     * @return the _pais
+     * @return the _digito
      */
-    public String getPais() {
-        return _pais;
+    public Byte getDigito() {
+        return _digito;
     }
     /**
-     * @return the _fechaModificacion
+     * @return the _mes
      */
-    public String getFechaModificacion() {
-        return _fechaModificacion;
+    public Byte getMes() {
+        return _mes;
     }
     /**
      * @param _id the _id to set
@@ -60,33 +60,33 @@ public class Pais {
         this._id = _id;
     }
     /**
-     * @param _pais the _pais to set
+     * @param _digito the _digito to set
      */
-    public void setPais(String _pais) {
-        this._pais = _pais;
+    public void setDigito(Byte _digito) {
+        this._digito = _digito;
     }
     /**
-     * @param _fechaModificacion the _fechaModificacion to set
+     * @param _mes the _mes to set
      */
-    public void setFechaModificacion(String _fechaModificacion) {
-        this._fechaModificacion = _fechaModificacion;
+    public void setMes(Byte _mes) {
+        this._mes = _mes;
     }
 
-    public static Pais fromRS(ResultSet p_rs) throws SQLException {
-        Pais ret = new Pais();
+    public static RevisionTecnica fromRS(ResultSet p_rs) throws SQLException {
+        RevisionTecnica ret = new RevisionTecnica();
 
         ret.setId(p_rs.getLong("id"));
-        ret.setPais(p_rs.getString("pais"));
-        ret.setFechaModificacion(p_rs.getString("fecha_modificacion"));
+        ret.setDigito(p_rs.getByte("digito"));
+        ret.setMes(p_rs.getByte("mes"));
 
         return ret;
     }
 
-    public static Pais getByParameter(Connection p_conn, String p_key, String p_value) throws SQLException {
-        Pais ret = null;
+    public static RevisionTecnica getByParameter(Connection p_conn, String p_key, String p_value) throws SQLException {
+        RevisionTecnica ret = null;
         
         String str_sql = _str_sql +
-            "  WHERE pa." + p_key + " = " + p_value +
+            "  WHERE re." + p_key + " = " + p_value +
             "  LIMIT 0, 1";
         
         //System.out.println(str_sql);
@@ -143,49 +143,28 @@ public class Pais {
         return ret;        
     }
 
-    public static Pais getById(Connection p_conn, String p_id) throws SQLException {
-        return getByParameter(p_conn, "id_pais", p_id);
+    public static RevisionTecnica getById(Connection p_conn, String p_id) throws SQLException {
+        return getByParameter(p_conn, "id_revision_tecnica", p_id);
     }
     
-    public static ArrayList<Pais> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws UnsupportedParameterException, SQLException {
+    public static ArrayList<RevisionTecnica> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws UnsupportedParameterException, SQLException {
         Statement stmt = null;
         ResultSet rs = null;
         String str_sql;
-        ArrayList<Pais> ret;
+        ArrayList<RevisionTecnica> ret;
         
         str_sql = "";
         
         try {
             ArrayList<String> array_clauses = new ArrayList<String>();
             
-            ret = new ArrayList<Pais>();
+            ret = new ArrayList<RevisionTecnica>();
             
             str_sql = _str_sql;
             
             for (AbstractMap.SimpleEntry<String, String> p : p_parameters) {
-                if (p.getKey().equals("id_pais")) {
-                    array_clauses.add("pa.id_pais = " + p.getValue());
-                }
-                else if (p.getKey().equals("id_usuario")) {
-                	str_sql +=
-                		"    JOIN region r ON r.id_pais = pa.id_pais" +
-                		"    JOIN comuna c ON c.id_region = r.id_region" +
-                		"    JOIN usuario u ON u.id_comuna = c.id_comuna";
-                    array_clauses.add("u.id_usuario = " + p.getValue());
-                }
-                else if (p.getKey().equals("id_red_social")) {
-                	str_sql +=
-                		"    JOIN region r ON r.id_pais = pa.id_pais" +
-                		"    JOIN comuna c ON c.id_region = r.id_region" +
-                		"    JOIN usuario u ON u.id_comuna = c.id_comuna" +
-                		"    JOIN autenticacion a ON a.id_usuario = u.id_usuario";
-                    array_clauses.add("a.id_red_social = " + p.getValue());
-                }
-                else if (p.getKey().equals("token")) {
-                    array_clauses.add("a.token = '" + p.getValue() + "'");
-                }
-                else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("pa.fecha_modificacion > STR_TO_DATE('" + p.getValue() + "', '%Y-%m-%d %H:%i:%s')");
+                if (p.getKey().equals("id_revision_tecnica")) {
+                    array_clauses.add("re.id_revision_tecnica = " + p.getValue());
                 }
                 else {
                     throw new UnsupportedParameterException("Parametro no soportado: " + p.getKey());
@@ -271,12 +250,12 @@ public class Pais {
         Statement stmt = null;
 
         String str_sql =
-            "    UPDATE pais" +
+            "    UPDATE revision_tecnica" +
             "    SET" +
-            "    pais = " + (_pais != null ? "'" + _pais + "'" : "null") + "," +
-            "    fecha_modificacion = " + (_fechaModificacion != null ? "STR_TO_DATE('" + _fechaModificacion + "', '%Y-%m-%d %H:%i:%s')" : "null") +
+            "    digito = " + (_digito != null ? _digito : "null") + "," +
+            "    mes = " + (_mes != null ? _mes : "null") +
             "    WHERE" +
-            "    id_pais = " + Long.toString(this._id);
+            "    id_revision_tecnica = " + Long.toString(this._id);
 
         try {
             stmt = p_conn.createStatement();
@@ -322,12 +301,14 @@ public class Pais {
         ResultSet rs = null;
 
         String str_sql =
-            "    INSERT INTO pais" +
+            "    INSERT INTO revision_tecnica" +
             "    (" +
-            "    pais)" +
+            "    digito, " +
+            "    mes)" +
             "    VALUES" +
             "    (" +
-            "    " + (_pais != null ? "'" + _pais + "'" : "null") +
+            "    " + (_digito != null ? "'" + _digito + "'" : "null") + "," +
+            "    " + (_mes != null ? "'" + _mes + "'" : "null") +
             "    )";
         
         try {
@@ -391,9 +372,9 @@ public class Pais {
         Statement stmt = null;
 
         String str_sql =
-            "    DELETE FROM pais" +
+            "    DELETE FROM revision_tecnica" +
             "    WHERE" +
-            "    id_pais = " + Long.toString(this._id);
+            "    id_revision_tecnica = " + Long.toString(this._id);
 
         try {
             stmt = p_conn.createStatement();
@@ -427,11 +408,11 @@ public class Pais {
     }
 
     public void load(Connection p_conn) throws SQLException {
-        Pais obj = null;
+        RevisionTecnica obj = null;
         
         String str_sql = _str_sql +
             "    WHERE" +
-            "    id_pais = " + Long.toString(this._id) +
+            "    id_revision_tecnica = " + Long.toString(this._id) +
             "    LIMIT 0, 1";
         
         //System.out.println(str_sql);
@@ -453,8 +434,8 @@ public class Pais {
                 obj = fromRS(rs);
                 //System.out.println("fromRS(rs) ok");
 
-                _pais = obj.getPais();
-                _fechaModificacion = obj.getFechaModificacion();
+                _digito = obj.getDigito();
+                _mes = obj.getMes();
             }
         }
         catch (SQLException ex){
@@ -494,7 +475,7 @@ public class Pais {
         
         String str_sql = _str_sql +
             "    WHERE" +
-            "    id_pais = " + Long.toString(this._id) +
+            "    id_revision_tecnica = " + Long.toString(this._id) +
             "    LIMIT 0, 1";
         
         //System.out.println(str_sql);
@@ -564,40 +545,40 @@ public class Pais {
 
     @Override
     public String toString() {
-        return "Pais [" +
+        return "RevisionTecnica [" +
 	           "    _id = " + (_id != null ? _id : "null") + "," +
-	           "    _pais = " + (_pais != null ? "'" + _pais + "'" : "null") + "," +
-	           "    _fecha_modificacion = " + (_fechaModificacion != null ? "STR_TO_DATE(" + _fechaModificacion + ", '%Y-%m-%d %H:%i:%s')" : "null") +
+	           "    _digito = " + (_digito != null ? _digito : "null") + "," +
+	           "    _mes = " + (_mes != null ? _mes : "null") +
 			   "]";
     }
 
 
     public String toJSON() {
-        return "Pais : {" +
+        return "RevisionTecnica : {" +
 	           "    \"_id\" : " + (_id != null ? _id : "null") + "," +
-	           "    \"_pais\" : " + (_pais != null ? "\"" + _pais + "\"" : "null") + "," +
-	           "    \"_fecha_modificacion\" : " + (_fechaModificacion != null ? "\"" + _fechaModificacion + "\"" : "null") +
+	           "    \"_digito\" : " + (_digito != null ? _digito : "null") + "," +
+	           "    \"_mes\" : " + (_mes != null ? _mes : "null") +
 			   "}";
     }
 
 
     public String toXML() {
-        return "<Pais>" +
+        return "<RevisionTecnica>" +
 	           "    <id" + (_id != null ? ">" + _id + "</id>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <pais" + (_pais != null ? ">" + _pais + "</pais>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <fechaModificacion" + (_fechaModificacion != null ? ">" + _fechaModificacion + "</fechaModificacion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-			   "</Pais>";
+	           "    <digito" + (_digito != null ? ">" + _digito + "</digito>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+	           "    <mes" + (_mes != null ? ">" + _mes + "</mes>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+			   "</RevisionTecnica>";
     }
 
 
-    public static Pais fromXMLNode(Node xmlNode) {
-        Pais ret = new Pais();
+    public static RevisionTecnica fromXMLNode(Node xmlNode) {
+        RevisionTecnica ret = new RevisionTecnica();
 
         Element element = (Element) xmlNode;
 
-        ret.setId(Long.decode(element.getElementsByTagName("id_pais").item(0).getTextContent()));
-        ret.setPais(element.getElementsByTagName("pais").item(0).getTextContent());
-        ret.setFechaModificacion(element.getElementsByTagName("fecha_modificacion").item(0).getTextContent());
+        ret.setId(Long.decode(element.getElementsByTagName("id_revision_tecnica").item(0).getTextContent()));
+        ret.setDigito(Byte.decode(element.getElementsByTagName("digito").item(0).getTextContent()));
+        ret.setMes(Byte.decode(element.getElementsByTagName("mes").item(0).getTextContent()));
 
         return ret;
     }

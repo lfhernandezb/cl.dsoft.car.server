@@ -7,8 +7,13 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.AbstractMap.SimpleEntry;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import cl.dsoft.car.misc.UnsupportedParameterException;
@@ -295,6 +300,83 @@ public class Vehiculo {
      */
     public void setIdCombustible(Byte _idCombustible) {
         this._idCombustible = _idCombustible;
+    }
+    /**
+     * @return the _fechaUltimaCalibracion as Date
+     */
+    public Date getFechaUltimaCalibracionAsDate() throws ParseException {
+        Date d;
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        d = formatter.parse(_fechaUltimaCalibracion);
+
+        return d;
+    }
+    /**
+     * @param _fechaUltimoKm the _fechaUltimoKm to set as java.util.Date
+     */
+    public void setFechaUltimoKm(Date _fecha) {
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        this._fechaUltimoKm = formatter.format(_fecha);
+
+    }
+    
+    public Modelo getModelo(Connection p_conn) throws SQLException {
+    	Modelo m = Modelo.getByParameter(p_conn, "id_modelo", String.valueOf(this._idModelo));
+    	
+    	return m;
+    }
+
+    public Marca getMarca(Connection p_conn) throws SQLException {
+    	Marca ma = null;
+    	Modelo m = getModelo(p_conn);
+    	
+    	if (m != null) {
+    		ma = Marca.getByParameter(p_conn, "id_marca", String.valueOf(m.getIdMarca()));
+    	}
+    	
+    	return ma;
+    }
+
+    public ArrayList<SeguroVehiculo> getSeguroVehiculos(Connection conn) throws UnsupportedParameterException, SQLException {
+    	ArrayList<AbstractMap.SimpleEntry<String, String>> listParameters;
+    	ArrayList<SeguroVehiculo> listSV = null;
+    	
+    	listParameters = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
+    	
+    	listParameters.add(new SimpleEntry<String, String>("id_vehiculo", String.valueOf(this._idVehiculo)));
+    	
+    	listSV = SeguroVehiculo.seek(conn, listParameters, "id_seguro_vehiculo", "ASC", 0, 10000);
+    	
+    	return listSV;
+    }
+
+    public ArrayList<MantencionBaseHecha> getMantencionBaseHechas(Connection conn) throws UnsupportedParameterException, SQLException {
+    	ArrayList<AbstractMap.SimpleEntry<String, String>> listParameters;
+    	ArrayList<MantencionBaseHecha> listMBH = null;
+    	
+    	listParameters = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
+    	
+    	listParameters.add(new SimpleEntry<String, String>("id_vehiculo", String.valueOf(this._idVehiculo)));
+    	
+    	listMBH = MantencionBaseHecha.seek(conn, listParameters, null, null, 0, 10000);
+    	
+    	return listMBH;
+    }
+
+    public ArrayList<CargaCombustible> getCargaCombustibles(Connection conn) throws UnsupportedParameterException, SQLException {
+    	ArrayList<AbstractMap.SimpleEntry<String, String>> listParameters;
+    	ArrayList<CargaCombustible> listCC = null;
+    	
+    	listParameters = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
+    	
+    	listParameters.add(new SimpleEntry<String, String>("id_vehiculo", String.valueOf(this._idVehiculo)));
+    	
+    	listCC = CargaCombustible.seek(conn, listParameters, null, null, 0, 10000);
+    	
+    	return listCC;
     }
 
     public static Vehiculo fromRS(ResultSet p_rs) throws SQLException {

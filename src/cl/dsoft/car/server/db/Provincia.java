@@ -7,12 +7,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Date;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import cl.dsoft.car.misc.UnsupportedParameterException;
@@ -21,41 +17,38 @@ import cl.dsoft.car.misc.UnsupportedParameterException;
  * @author petete-ntbk
  *
  */
-public class MantencionBaseHecha {
+public class Provincia {
+    protected Long _id;
+    protected String _provincia;
     protected String _fechaModificacion;
-    protected String _fecha;
-    protected Long _idUsuario;
-    protected Long _idMantencionBase;
-    protected Long _idVehiculo;
-    protected Boolean _borrado;
-    protected Integer _costo;
-    protected Integer _km;
-    protected Integer _idMantencionBaseHecha;
+    protected Long _idRegion;
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    DATE_FORMAT(ma.fecha_modificacion, '%Y-%m-%d %H:%i:%s') AS fecha_modificacion," +
-        "    DATE_FORMAT(ma.fecha, '%Y-%m-%d %H:%i:%s') AS fecha," +
-        "    ma.id_usuario AS id_usuario," +
-        "    ma.id_mantencion_base AS id_mantencion_base," +
-        "    ma.id_vehiculo AS id_vehiculo," +
-        "    0+ma.borrado AS borrado," +
-        "    ma.costo AS costo," +
-        "    ma.km AS km," +
-        "    ma.id_mantencion_base_hecha AS id_mantencion_base_hecha" +
-        "    FROM mantencion_base_hecha ma";
+        "    pr.id_provincia AS id," +
+        "    pr.provincia AS provincia," +
+        "    DATE_FORMAT(pr.fecha_modificacion, '%Y-%m-%d %H:%i:%s') AS fecha_modificacion," +
+        "    pr.id_region AS id_region" +
+        "    FROM provincia pr";
 
-    public MantencionBaseHecha() {
+    public Provincia() {
+        _id = null;
+        _provincia = null;
         _fechaModificacion = null;
-        _fecha = null;
-        _idUsuario = null;
-        _idMantencionBase = null;
-        _idVehiculo = null;
-        _borrado = null;
-        _costo = null;
-        _km = null;
-        _idMantencionBaseHecha = null;
+        _idRegion = null;
 
+    }
+    /**
+     * @return the _id
+     */
+    public Long getId() {
+        return _id;
+    }
+    /**
+     * @return the _provincia
+     */
+    public String getProvincia() {
+        return _provincia;
     }
     /**
      * @return the _fechaModificacion
@@ -64,52 +57,22 @@ public class MantencionBaseHecha {
         return _fechaModificacion;
     }
     /**
-     * @return the _fecha
+     * @return the _idRegion
      */
-    public String getFecha() {
-        return _fecha;
+    public Long getIdRegion() {
+        return _idRegion;
     }
     /**
-     * @return the _idUsuario
+     * @param _id the _id to set
      */
-    public Long getIdUsuario() {
-        return _idUsuario;
+    public void setId(Long _id) {
+        this._id = _id;
     }
     /**
-     * @return the _idMantencionBase
+     * @param _provincia the _provincia to set
      */
-    public Long getIdMantencionBase() {
-        return _idMantencionBase;
-    }
-    /**
-     * @return the _idVehiculo
-     */
-    public Long getIdVehiculo() {
-        return _idVehiculo;
-    }
-    /**
-     * @return the _borrado
-     */
-    public Boolean getBorrado() {
-        return _borrado;
-    }
-    /**
-     * @return the _costo
-     */
-    public Integer getCosto() {
-        return _costo;
-    }
-    /**
-     * @return the _km
-     */
-    public Integer getKm() {
-        return _km;
-    }
-    /**
-     * @return the _idMantencionBaseHecha
-     */
-    public Integer getIdMantencionBaseHecha() {
-        return _idMantencionBaseHecha;
+    public void setProvincia(String _provincia) {
+        this._provincia = _provincia;
     }
     /**
      * @param _fechaModificacion the _fechaModificacion to set
@@ -118,96 +81,28 @@ public class MantencionBaseHecha {
         this._fechaModificacion = _fechaModificacion;
     }
     /**
-     * @param _fecha the _fecha to set
+     * @param _idRegion the _idRegion to set
      */
-    public void setFecha(String _fecha) {
-        this._fecha = _fecha;
-    }
-    /**
-     * @param _idUsuario the _idUsuario to set
-     */
-    public void setIdUsuario(Long _idUsuario) {
-        this._idUsuario = _idUsuario;
-    }
-    /**
-     * @param _idMantencionBase the _idMantencionBase to set
-     */
-    public void setIdMantencionBase(Long _idMantencionBase) {
-        this._idMantencionBase = _idMantencionBase;
-    }
-    /**
-     * @param _idVehiculo the _idVehiculo to set
-     */
-    public void setIdVehiculo(Long _idVehiculo) {
-        this._idVehiculo = _idVehiculo;
-    }
-    /**
-     * @param _borrado the _borrado to set
-     */
-    public void setBorrado(Boolean _borrado) {
-        this._borrado = _borrado;
-    }
-    /**
-     * @param _costo the _costo to set
-     */
-    public void setCosto(Integer _costo) {
-        this._costo = _costo;
-    }
-    /**
-     * @param _km the _km to set
-     */
-    public void setKm(Integer _km) {
-        this._km = _km;
-    }
-    /**
-     * @return the _fecha as Date
-     */
-    public Date getFechaAsDate() throws ParseException {
-        Date d;
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
-        d = formatter.parse(_fecha);
-
-        return d;
-    }
-    /**
-     * @param _fecha the _fecha to set as java.util.Date
-     */
-    public void setFecha(Date _fecha) {
-
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
-        this._fecha = formatter.format(_fecha);
-
-    }
-    /**
-     * @param _idMantencionBaseHecha the _idMantencionBaseHecha to set
-     */
-    public void setIdMantencionBaseHecha(Integer _idMantencionBaseHecha) {
-        this._idMantencionBaseHecha = _idMantencionBaseHecha;
+    public void setIdRegion(Long _idRegion) {
+        this._idRegion = _idRegion;
     }
 
-    public static MantencionBaseHecha fromRS(ResultSet p_rs) throws SQLException {
-        MantencionBaseHecha ret = new MantencionBaseHecha();
+    public static Provincia fromRS(ResultSet p_rs) throws SQLException {
+        Provincia ret = new Provincia();
 
+        ret.setId(p_rs.getLong("id"));
+        ret.setProvincia(p_rs.getString("provincia"));
         ret.setFechaModificacion(p_rs.getString("fecha_modificacion"));
-        ret.setFecha(p_rs.getString("fecha"));
-        ret.setIdUsuario(p_rs.getLong("id_usuario"));
-        ret.setIdMantencionBase(p_rs.getLong("id_mantencion_base"));
-        ret.setIdVehiculo(p_rs.getLong("id_vehiculo"));
-        ret.setBorrado(p_rs.getBoolean("borrado"));
-        ret.setCosto(p_rs.getInt("costo"));
-        ret.setKm(p_rs.getInt("km"));
-        ret.setIdMantencionBaseHecha(p_rs.getInt("id_mantencion_base_hecha"));
+        ret.setIdRegion(p_rs.getLong("id_region"));
 
         return ret;
     }
 
-    public static MantencionBaseHecha getByParameter(Connection p_conn, String p_key, String p_value) throws SQLException {
-        MantencionBaseHecha ret = null;
+    public static Provincia getByParameter(Connection p_conn, String p_key, String p_value) throws SQLException {
+        Provincia ret = null;
         
         String str_sql = _str_sql +
-            "  WHERE ma." + p_key + " = " + p_value +
+            "  WHERE pr." + p_key + " = " + p_value +
             "  LIMIT 0, 1";
         
         //System.out.println(str_sql);
@@ -264,46 +159,34 @@ public class MantencionBaseHecha {
         return ret;        
     }
 
+    public static Provincia getById(Connection p_conn, String p_id) throws SQLException {
+        return getByParameter(p_conn, "id_provincia", p_id);
+    }
     
-    public static ArrayList<MantencionBaseHecha> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws UnsupportedParameterException, SQLException {
+    public static ArrayList<Provincia> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws UnsupportedParameterException, SQLException {
         Statement stmt = null;
         ResultSet rs = null;
         String str_sql;
-        ArrayList<MantencionBaseHecha> ret;
+        ArrayList<Provincia> ret;
         
         str_sql = "";
         
         try {
             ArrayList<String> array_clauses = new ArrayList<String>();
             
-            ret = new ArrayList<MantencionBaseHecha>();
+            ret = new ArrayList<Provincia>();
             
             str_sql = _str_sql;
             
             for (AbstractMap.SimpleEntry<String, String> p : p_parameters) {
-                if (p.getKey().equals("id_usuario")) {
-                    array_clauses.add("ma.id_usuario = " + p.getValue());
+                if (p.getKey().equals("id_provincia")) {
+                    array_clauses.add("pr.id_provincia = " + p.getValue());
                 }
-                else if (p.getKey().equals("id_mantencion_base_hecha")) {
-                    array_clauses.add("ma.id_mantencion_base_hecha = " + p.getValue());
-                }
-                else if (p.getKey().equals("id_usuario")) {
-                    array_clauses.add("ma.id_usuario = " + p.getValue());
-                }
-                else if (p.getKey().equals("id_vehiculo")) {
-                    array_clauses.add("ma.id_vehiculo = " + p.getValue());
-                }
-                else if (p.getKey().equals("id_mantencion_base")) {
-                    array_clauses.add("ma.id_mantencion_base = " + p.getValue());
+                else if (p.getKey().equals("id_region")) {
+                    array_clauses.add("pr.id_region = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("ma.fecha_modificacion > STR_TO_DATE('" + p.getValue() + "', '%Y-%m-%d %H:%i:%s')");
-                }
-                else if (p.getKey().equals("no borrado")) {
-                    array_clauses.add("ma.borrado = 0");
-                }
-                else if (p.getKey().equals("borrado")) {
-                    array_clauses.add("ma.borrado = 1");
+                    array_clauses.add("pr.fecha_modificacion > STR_TO_DATE('" + p.getValue() + "', '%Y-%m-%d %H:%i:%s')");
                 }
                 else {
                     throw new UnsupportedParameterException("Parametro no soportado: " + p.getKey());
@@ -389,16 +272,12 @@ public class MantencionBaseHecha {
         Statement stmt = null;
 
         String str_sql =
-            "    UPDATE mantencion_base_hecha" +
+            "    UPDATE provincia" +
             "    SET" +
-            "    fecha_modificacion = " + (_fechaModificacion != null ? "STR_TO_DATE('" + _fechaModificacion + "', '%Y-%m-%d %H:%i:%s')" : "null") + "," +
-            "    fecha = " + (_fecha != null ? "STR_TO_DATE('" + _fecha + "', '%Y-%m-%d %H:%i:%s')" : "null") + "," +
-            "    borrado = " + (_borrado != null ? "b'" + (_borrado ? 1 : 0) + "'" : "null") + "," +
-            "    costo = " + (_costo != null ? _costo : "null") + "," +
-            "    km = " + (_km != null ? _km : "null") +
+            "    provincia = " + (_provincia != null ? "'" + _provincia + "'" : "null") + "," +
+            "    fecha_modificacion = " + (_fechaModificacion != null ? "STR_TO_DATE('" + _fechaModificacion + "', '%Y-%m-%d %H:%i:%s')" : "null") +
             "    WHERE" +
-            "    id_usuario = " + Long.toString(this._idUsuario) + " AND" +
-            "    id_mantencion_base_hecha = " + Integer.toString(this._idMantencionBaseHecha);
+            "    id_provincia = " + Long.toString(this._id);
 
         try {
             stmt = p_conn.createStatement();
@@ -444,30 +323,33 @@ public class MantencionBaseHecha {
         ResultSet rs = null;
 
         String str_sql =
-            "    INSERT INTO mantencion_base_hecha" +
+            "    INSERT INTO provincia" +
             "    (" +
-            "    fecha, " +
-            "    id_usuario, " +
-            "    id_mantencion_base, " +
-            "    id_vehiculo, " +
-            "    costo, " +
-            "    km, " +
-            "    id_mantencion_base_hecha)" +
+            "    provincia, " +
+            "    id_region)" +
             "    VALUES" +
             "    (" +
-            "    " + (_fecha != null ? "STR_TO_DATE('" + _fecha + "', '%Y-%m-%d %H:%i:%s')" : "null") + "," +
-            "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "null") + "," +
-            "    " + (_idMantencionBase != null ? "'" + _idMantencionBase + "'" : "null") + "," +
-            "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "null") + "," +
-            "    " + (_costo != null ? "'" + _costo + "'" : "null") + "," +
-            "    " + (_km != null ? "'" + _km + "'" : "null") + "," +
-            "    " + (_idMantencionBaseHecha != null ? "'" + _idMantencionBaseHecha + "'" : "null") +
+            "    " + (_provincia != null ? "'" + _provincia + "'" : "null") + "," +
+            "    " + (_idRegion != null ? "'" + _idRegion + "'" : "null") +
             "    )";
         
         try {
             stmt = p_conn.createStatement();
 
-            ret = stmt.executeUpdate(str_sql);
+            ret = stmt.executeUpdate(str_sql, Statement.RETURN_GENERATED_KEYS);
+
+            rs = stmt.getGeneratedKeys();
+
+            if (rs.next()) {
+                _id = rs.getLong(1);
+            } else {
+                // throw an exception from here
+                // throw new Exception("Error al obtener id");
+            }
+
+            rs.close();
+            rs = null;
+            //System.out.println("Key returned from getGeneratedKeys():" + _id.toString());
 
             load(p_conn);
 
@@ -512,10 +394,9 @@ public class MantencionBaseHecha {
         Statement stmt = null;
 
         String str_sql =
-            "    DELETE FROM mantencion_base_hecha" +
+            "    DELETE FROM provincia" +
             "    WHERE" +
-            "    id_usuario = " + Long.toString(this._idUsuario) + " AND" +
-            "    id_mantencion_base_hecha = " + Integer.toString(this._idMantencionBaseHecha);
+            "    id_provincia = " + Long.toString(this._id);
 
         try {
             stmt = p_conn.createStatement();
@@ -549,12 +430,11 @@ public class MantencionBaseHecha {
     }
 
     public void load(Connection p_conn) throws SQLException {
-        MantencionBaseHecha obj = null;
+        Provincia obj = null;
         
         String str_sql = _str_sql +
             "    WHERE" +
-            "    id_usuario = " + Long.toString(this._idUsuario) + " AND" +
-            "    id_mantencion_base_hecha = " + Integer.toString(this._idMantencionBaseHecha) +
+            "    id_provincia = " + Long.toString(this._id) +
             "    LIMIT 0, 1";
         
         //System.out.println(str_sql);
@@ -576,13 +456,9 @@ public class MantencionBaseHecha {
                 obj = fromRS(rs);
                 //System.out.println("fromRS(rs) ok");
 
+                _provincia = obj.getProvincia();
                 _fechaModificacion = obj.getFechaModificacion();
-                _fecha = obj.getFecha();
-                _idMantencionBase = obj.getIdMantencionBase();
-                _idVehiculo = obj.getIdVehiculo();
-                _borrado = obj.getBorrado();
-                _costo = obj.getCosto();
-                _km = obj.getKm();
+                _idRegion = obj.getIdRegion();
             }
         }
         catch (SQLException ex){
@@ -622,8 +498,7 @@ public class MantencionBaseHecha {
         
         String str_sql = _str_sql +
             "    WHERE" +
-            "    id_usuario = " + Long.toString(this._idUsuario) + " AND" +
-            "    id_mantencion_base_hecha = " + Integer.toString(this._idMantencionBaseHecha) +
+            "    id_provincia = " + Long.toString(this._id) +
             "    LIMIT 0, 1";
         
         //System.out.println(str_sql);
@@ -693,64 +568,44 @@ public class MantencionBaseHecha {
 
     @Override
     public String toString() {
-        return "MantencionBaseHecha [" +
+        return "Provincia [" +
+	           "    _id = " + (_id != null ? _id : "null") + "," +
+	           "    _provincia = " + (_provincia != null ? "'" + _provincia + "'" : "null") + "," +
 	           "    _fecha_modificacion = " + (_fechaModificacion != null ? "STR_TO_DATE(" + _fechaModificacion + ", '%Y-%m-%d %H:%i:%s')" : "null") + "," +
-	           "    _fecha = " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%Y-%m-%d %H:%i:%s')" : "null") + "," +
-	           "    _idUsuario = " + (_idUsuario != null ? _idUsuario : "null") + "," +
-	           "    _idMantencionBase = " + (_idMantencionBase != null ? _idMantencionBase : "null") + "," +
-	           "    _idVehiculo = " + (_idVehiculo != null ? _idVehiculo : "null") + "," +
-	           "    _borrado = " + (_borrado != null ? "b'" + _borrado : "null") + "," +
-	           "    _costo = " + (_costo != null ? _costo : "null") + "," +
-	           "    _km = " + (_km != null ? _km : "null") + "," +
-	           "    _idMantencionBaseHecha = " + (_idMantencionBaseHecha != null ? _idMantencionBaseHecha : "null") +
+	           "    _idRegion = " + (_idRegion != null ? _idRegion : "null") +
 			   "]";
     }
 
 
     public String toJSON() {
-        return "MantencionBaseHecha : {" +
+        return "Provincia : {" +
+	           "    \"_id\" : " + (_id != null ? _id : "null") + "," +
+	           "    \"_provincia\" : " + (_provincia != null ? "\"" + _provincia + "\"" : "null") + "," +
 	           "    \"_fecha_modificacion\" : " + (_fechaModificacion != null ? "\"" + _fechaModificacion + "\"" : "null") + "," +
-	           "    \"_fecha\" : " + (_fecha != null ? "\"" + _fecha + "\"" : "null") + "," +
-	           "    \"_idUsuario\" : " + (_idUsuario != null ? _idUsuario : "null") + "," +
-	           "    \"_idMantencionBase\" : " + (_idMantencionBase != null ? _idMantencionBase : "null") + "," +
-	           "    \"_idVehiculo\" : " + (_idVehiculo != null ? _idVehiculo : "null") + "," +
-	           "    \"_borrado\" : " + (_borrado != null ? "b'" + _borrado : "null") + "," +
-	           "    \"_costo\" : " + (_costo != null ? _costo : "null") + "," +
-	           "    \"_km\" : " + (_km != null ? _km : "null") + "," +
-	           "    \"_idMantencionBaseHecha\" : " + (_idMantencionBaseHecha != null ? _idMantencionBaseHecha : "null") +
+	           "    \"_idRegion\" : " + (_idRegion != null ? _idRegion : "null") +
 			   "}";
     }
 
 
     public String toXML() {
-        return "<MantencionBaseHecha>" +
+        return "<Provincia>" +
+	           "    <id" + (_id != null ? ">" + _id + "</id>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+	           "    <provincia" + (_provincia != null ? ">" + _provincia + "</provincia>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <fechaModificacion" + (_fechaModificacion != null ? ">" + _fechaModificacion + "</fechaModificacion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <fecha" + (_fecha != null ? ">" + _fecha + "</fecha>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <idUsuario" + (_idUsuario != null ? ">" + _idUsuario + "</idUsuario>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <idMantencionBase" + (_idMantencionBase != null ? ">" + _idMantencionBase + "</idMantencionBase>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <idVehiculo" + (_idVehiculo != null ? ">" + _idVehiculo + "</idVehiculo>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <borrado" + (_borrado != null ? ">" + _borrado + "</borrado>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <costo" + (_costo != null ? ">" + _costo + "</costo>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <km" + (_km != null ? ">" + _km + "</km>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <idMantencionBaseHecha" + (_idMantencionBaseHecha != null ? ">" + _idMantencionBaseHecha + "</idMantencionBaseHecha>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-			   "</MantencionBaseHecha>";
+	           "    <idRegion" + (_idRegion != null ? ">" + _idRegion + "</idRegion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+			   "</Provincia>";
     }
 
 
-    public static MantencionBaseHecha fromXMLNode(Node xmlNode) {
-        MantencionBaseHecha ret = new MantencionBaseHecha();
+    public static Provincia fromXMLNode(Node xmlNode) {
+        Provincia ret = new Provincia();
 
         Element element = (Element) xmlNode;
 
+        ret.setId(Long.decode(element.getElementsByTagName("id_provincia").item(0).getTextContent()));
+        ret.setProvincia(element.getElementsByTagName("provincia").item(0).getTextContent());
         ret.setFechaModificacion(element.getElementsByTagName("fecha_modificacion").item(0).getTextContent());
-        ret.setFecha(element.getElementsByTagName("fecha").item(0).getTextContent());
-        ret.setIdUsuario(Long.decode(element.getElementsByTagName("id_usuario").item(0).getTextContent()));
-        ret.setIdMantencionBase(Long.decode(element.getElementsByTagName("id_mantencion_base").item(0).getTextContent()));
-        ret.setIdVehiculo(Long.decode(element.getElementsByTagName("id_vehiculo").item(0).getTextContent()));
-        ret.setBorrado(Boolean.valueOf(element.getElementsByTagName("borrado").item(0).getTextContent()));
-        ret.setCosto(Integer.decode(element.getElementsByTagName("costo").item(0).getTextContent()));
-        ret.setKm(Integer.decode(element.getElementsByTagName("km").item(0).getTextContent()));
-        ret.setIdMantencionBaseHecha(Integer.decode(element.getElementsByTagName("id_mantencion_base_hecha").item(0).getTextContent()));
+        ret.setIdRegion(Long.decode(element.getElementsByTagName("id_region").item(0).getTextContent()));
 
         return ret;
     }

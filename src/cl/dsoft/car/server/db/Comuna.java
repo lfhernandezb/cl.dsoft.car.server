@@ -18,25 +18,31 @@ import cl.dsoft.car.misc.UnsupportedParameterException;
  *
  */
 public class Comuna {
+    protected Long _id;
     protected Long _idRegion;
     protected String _comuna;
     protected String _fechaModificacion;
-    protected Long _id;
 
     private final static String _str_sql = 
         "    SELECT" +
+        "    co.id_comuna AS id," +
         "    co.id_region AS id_region," +
         "    co.comuna AS comuna," +
-        "    DATE_FORMAT(co.fecha_modificacion, '%Y-%m-%d %H:%i:%s') AS fecha_modificacion," +
-        "    co.id_comuna AS id" +
+        "    DATE_FORMAT(co.fecha_modificacion, '%Y-%m-%d %H:%i:%s') AS fecha_modificacion" +
         "    FROM comuna co";
 
     public Comuna() {
+        _id = null;
         _idRegion = null;
         _comuna = null;
         _fechaModificacion = null;
-        _id = null;
 
+    }
+    /**
+     * @return the _id
+     */
+    public Long getId() {
+        return _id;
     }
     /**
      * @return the _idRegion
@@ -57,10 +63,10 @@ public class Comuna {
         return _fechaModificacion;
     }
     /**
-     * @return the _id
+     * @param _id the _id to set
      */
-    public Long getId() {
-        return _id;
+    public void setId(Long _id) {
+        this._id = _id;
     }
     /**
      * @param _idRegion the _idRegion to set
@@ -80,20 +86,14 @@ public class Comuna {
     public void setFechaModificacion(String _fechaModificacion) {
         this._fechaModificacion = _fechaModificacion;
     }
-    /**
-     * @param _id the _id to set
-     */
-    public void setId(Long _id) {
-        this._id = _id;
-    }
 
     public static Comuna fromRS(ResultSet p_rs) throws SQLException {
         Comuna ret = new Comuna();
 
+        ret.setId(p_rs.getLong("id"));
         ret.setIdRegion(p_rs.getLong("id_region"));
         ret.setComuna(p_rs.getString("comuna"));
         ret.setFechaModificacion(p_rs.getString("fecha_modificacion"));
-        ret.setId(p_rs.getLong("id"));
 
         return ret;
     }
@@ -340,19 +340,30 @@ public class Comuna {
             "    INSERT INTO comuna" +
             "    (" +
             "    id_region, " +
-            "    comuna, " +
-            "    id_comuna)" +
+            "    comuna)" +
             "    VALUES" +
             "    (" +
             "    " + (_idRegion != null ? "'" + _idRegion + "'" : "null") + "," +
-            "    " + (_comuna != null ? "'" + _comuna + "'" : "null") + "," +
-            "    " + (_id != null ? "'" + _id + "'" : "null") +
+            "    " + (_comuna != null ? "'" + _comuna + "'" : "null") +
             "    )";
         
         try {
             stmt = p_conn.createStatement();
 
-            ret = stmt.executeUpdate(str_sql);
+            ret = stmt.executeUpdate(str_sql, Statement.RETURN_GENERATED_KEYS);
+
+            rs = stmt.getGeneratedKeys();
+
+            if (rs.next()) {
+                _id = rs.getLong(1);
+            } else {
+                // throw an exception from here
+                // throw new Exception("Error al obtener id");
+            }
+
+            rs.close();
+            rs = null;
+            //System.out.println("Key returned from getGeneratedKeys():" + _id.toString());
 
             load(p_conn);
 
@@ -572,30 +583,30 @@ public class Comuna {
     @Override
     public String toString() {
         return "Comuna [" +
+	           "    _id = " + (_id != null ? _id : "null") + "," +
 	           "    _idRegion = " + (_idRegion != null ? _idRegion : "null") + "," +
 	           "    _comuna = " + (_comuna != null ? "'" + _comuna + "'" : "null") + "," +
-	           "    _fecha_modificacion = " + (_fechaModificacion != null ? "STR_TO_DATE(" + _fechaModificacion + ", '%Y-%m-%d %H:%i:%s')" : "null") + "," +
-	           "    _id = " + (_id != null ? _id : "null") +
+	           "    _fecha_modificacion = " + (_fechaModificacion != null ? "STR_TO_DATE(" + _fechaModificacion + ", '%Y-%m-%d %H:%i:%s')" : "null") +
 			   "]";
     }
 
 
     public String toJSON() {
         return "Comuna : {" +
+	           "    \"_id\" : " + (_id != null ? _id : "null") + "," +
 	           "    \"_idRegion\" : " + (_idRegion != null ? _idRegion : "null") + "," +
 	           "    \"_comuna\" : " + (_comuna != null ? "\"" + _comuna + "\"" : "null") + "," +
-	           "    \"_fecha_modificacion\" : " + (_fechaModificacion != null ? "\"" + _fechaModificacion + "\"" : "null") + "," +
-	           "    \"_id\" : " + (_id != null ? _id : "null") +
+	           "    \"_fecha_modificacion\" : " + (_fechaModificacion != null ? "\"" + _fechaModificacion + "\"" : "null") +
 			   "}";
     }
 
 
     public String toXML() {
         return "<Comuna>" +
+	           "    <id" + (_id != null ? ">" + _id + "</id>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <idRegion" + (_idRegion != null ? ">" + _idRegion + "</idRegion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <comuna" + (_comuna != null ? ">" + _comuna + "</comuna>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <fechaModificacion" + (_fechaModificacion != null ? ">" + _fechaModificacion + "</fechaModificacion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <id" + (_id != null ? ">" + _id + "</id>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 			   "</Comuna>";
     }
 
@@ -605,10 +616,10 @@ public class Comuna {
 
         Element element = (Element) xmlNode;
 
+        ret.setId(Long.decode(element.getElementsByTagName("id_comuna").item(0).getTextContent()));
         ret.setIdRegion(Long.decode(element.getElementsByTagName("id_region").item(0).getTextContent()));
         ret.setComuna(element.getElementsByTagName("comuna").item(0).getTextContent());
         ret.setFechaModificacion(element.getElementsByTagName("fecha_modificacion").item(0).getTextContent());
-        ret.setId(Long.decode(element.getElementsByTagName("id_comuna").item(0).getTextContent()));
 
         return ret;
     }

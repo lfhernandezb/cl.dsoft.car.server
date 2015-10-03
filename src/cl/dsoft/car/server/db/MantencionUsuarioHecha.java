@@ -7,8 +7,12 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Date;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import cl.dsoft.car.misc.UnsupportedParameterException;
@@ -160,6 +164,27 @@ public class MantencionUsuarioHecha {
      */
     public void setKm(Integer _km) {
         this._km = _km;
+    }
+    /**
+     * @return the _fecha as Date
+     */
+    public Date getFechaAsDate() throws ParseException {
+        Date d;
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        d = formatter.parse(_fecha);
+
+        return d;
+    }
+    /**
+     * @param _fecha the _fecha to set as java.util.Date
+     */
+    public void setFecha(Date _fecha) {
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        this._fecha = formatter.format(_fecha);
+
     }
 
     public static MantencionUsuarioHecha fromRS(ResultSet p_rs) throws SQLException {

@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.AbstractMap;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -176,6 +177,25 @@ public class Usuario {
     public void setFechaNacimiento(String _fechaNacimiento) {
         this._fechaNacimiento = _fechaNacimiento;
     }
+    
+    public ArrayList<Vehiculo> getVehiculos(Connection conn) throws UnsupportedParameterException, SQLException {
+    	ArrayList<AbstractMap.SimpleEntry<String, String>> listParameters;
+    	ArrayList<Vehiculo> listV = null;
+    	
+    	listParameters = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
+    	
+    	listParameters.add(new SimpleEntry<String, String>("id_usuario", String.valueOf(this._id)));
+    	
+    	listV = Vehiculo.seek(conn, listParameters, "id_vehiculo", "ASC", 0, 10000);
+    	
+    	return listV;
+    }
+    
+    public UsuarioInfo getUsuarioInfo(Connection conn) throws SQLException {
+    	UsuarioInfo ui = UsuarioInfo.getByParameter(conn, "id_usuario", String.valueOf(this._id));
+    	
+    	return ui;
+    }
 
     public static Usuario fromRS(ResultSet p_rs) throws SQLException {
         Usuario ret = new Usuario();
@@ -288,6 +308,14 @@ public class Usuario {
                 }
                 else if (p.getKey().equals("token")) {
                     array_clauses.add("a.token = '" + p.getValue() + "'");
+                }
+                else if (p.getKey().equals("sin posicion")) {
+                	str_sql +=
+                    	"    LEFT JOIN usuario_info ui ON ui.id_usuario = us.id_usuario";
+                    array_clauses.add("ui.country IS NULL");
+                }
+                else if (p.getKey().equals("id_usuario_in")) {
+                    array_clauses.add("us.id_usuario IN (" + p.getValue() + ")");
                 }
                 else if (p.getKey().equals("mas reciente")) {
                     array_clauses.add("us.fecha_modificacion > STR_TO_DATE('" + p.getValue() + "', '%Y-%m-%d %H:%i:%s')");

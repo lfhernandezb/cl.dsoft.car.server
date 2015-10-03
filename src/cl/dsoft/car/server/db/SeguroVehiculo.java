@@ -176,6 +176,12 @@ public class SeguroVehiculo {
     public void setIdTipoSeguro(Integer _idTipoSeguro) {
         this._idTipoSeguro = _idTipoSeguro;
     }
+    
+    public CiaSeguros getCiaSeguros(Connection conn) throws SQLException {
+    	CiaSeguros cs = CiaSeguros.getById(conn, String.valueOf(this._idCiaSeguros));
+    	
+    	return cs;
+    }
 
     public static SeguroVehiculo fromRS(ResultSet p_rs) throws SQLException {
         SeguroVehiculo ret = new SeguroVehiculo();
